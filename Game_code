@@ -1,0 +1,350 @@
+//for gcc compiler
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<math.h>
+int game();
+void brain();
+void dec (int j);
+void inc (int j);
+void display();
+void input();
+void intro();
+int check(char var,int blk);
+int move=-1,n;
+char A[100],B[100]={'\0'},C[100]={'\0'};
+int main()
+{
+char ch;
+game();
+printf("Do you want to play again ? ( y or n)\n");
+scanf("%s",&ch);
+while(ch !='n')
+{
+if (ch=='y' || ch=='Y')
+{main();}
+else 
+{printf("SORRY! didn't get you,Press Again.\n");
+scanf("%s",&ch);}
+}
+printf("Game and solution designed by:ANKIT ANAND(IIIT,Kottayam)\n");
+return 0;
+}
+//..........................................
+int game()
+{
+char var,ch;
+int blk;
+system("clear");
+intro();
+system("clear");
+input();
+for(int i=0;i>=0;i++)
+{
+int c=0;
+for(int k=0;k<n;k++)
+{
+if(C[k] !='\0')
+c++;
+}
+if(c==n)
+    {
+        printf("CONGRATS!,you completed the puzzle\n");
+         if(move>pow(2,n))
+        {printf("BUT, you should have completed in less steps\n");}
+        else 
+        {printf("YOU NAILED IT! That was a precise solution\n");}
+        break;
+    }
+else if(i==0)
+    {
+    
+    }
+else if(i!=0)
+    {
+        printf("forward or backward ?\t");
+        scanf("%s",&var);
+        printf("\n");
+        if(var=='q' || var =='Q')
+        {
+        break;
+        }
+        else if(var=='h' || var =='H')
+        {
+        brain();
+        break;
+        }
+        else if(var=='b' || var =='B')
+        {
+        printf("which block?\t");
+        scanf("%d",&blk);
+        printf("\n");
+            if(check(var,blk)==1)
+            {
+            dec(blk);
+            }
+            else
+            {
+            printf("WRONG STEP!!!\n Put smaller block on larger in a pile OR Move the smallest block from a pile ,try again\n");
+            continue;
+            }
+        
+        }
+        else if(var=='f' || var =='F')
+        {
+        printf("which block?\n");
+        scanf("%d",&blk);
+        if(check(var,blk)==1)
+            {
+            inc(blk);
+            }
+            else
+            {
+            printf("WRONG STEP!!!\n Put smaller block on larger in a pile OR Move the smallest block from a pile ,try again\n");
+            continue;
+            }
+        }
+        else if (var=='r' || var =='R')
+        {
+        main();        
+        }
+        else
+        {
+        printf("INVALID, try once again\n");
+        continue;
+        }
+    }
+display();
+}
+return 0;
+}
+//...........................................
+void brain()
+{
+move=-1;
+for(int i=0;i<pow(2,n);i++)
+{
+if(i==0)
+{}
+else
+{
+for(int j=0;j<n;j++)
+{
+int x=pow(2,j),y=pow(2,j+1);
+if( i%x==0 && i%y!=0)
+{
+if (n%2!=0)
+  {
+    if((j+1)%2!=0)
+    dec(j+1);
+   else
+    inc(j+1);
+   }
+else
+ {
+    if((j+1)%2==0)
+    dec(j+1);
+   else
+    inc(j+1);
+   }
+}
+}
+}
+display();
+}
+printf("the minimum steps to accomplish this task is:%d\n",move);
+}
+//...........................................
+void input()
+{
+
+int z;
+char p[100];
+ printf("Numbers of Blocks,you wanna use:  ");
+ scanf("%d",&z);
+ if(z<10)
+{
+}
+else
+{
+printf("Please enter value less than ten,try one more time.\n");
+scanf("%d",&z);
+}
+ for(int i=0;i<z;i++)
+{
+p[i]=((i+1)+'0');
+A[i]=p[i];
+}
+n=z;
+}
+// ...........................................
+void dec (int j)
+{
+if (A[j-1]!='\0')
+{
+C[j-1]=A[j-1];
+A[j-1]= '\0';
+}
+else if (B[j-1]!='\0')
+{
+A[j-1]=B[j-1];
+B[j-1]= '\0';
+}
+else
+{
+B[j-1]=C[j-1];
+C[j-1]= '\0';
+}
+}
+//.................................................
+void inc (int j)
+{
+if (A[j-1]!='\0')
+{
+B[j-1]=A[j-1];
+A[j-1]= '\0';
+}
+else if (B[j-1]!='\0')
+{
+C[j-1]=B[j-1];
+B[j-1]= '\0';
+}
+else
+{
+A[j-1]=C[j-1];
+C[j-1]= '\0';
+}
+}
+//...................................................
+void display()
+{
+system("clear");
+for (int k=0;k<n;k++)
+printf("%c \t %c \t %c \n",A[k],B[k],C[k]);
+printf("MOVES:%d \n",++move);
+fflush(stdout);
+sleep(1);
+
+}
+//.....................................................
+int check(char var,int blk)
+{
+int c=1;
+if(blk>n && blk<1)
+{
+printf("INVALID SELECTION,try once again\n");
+return c;
+}
+else if(blk==1)
+{return c;
+}
+
+
+else if(A[blk-1]!='\0')
+{
+for(int i=(blk-1);i>=0;i--)
+{
+if(A[blk-2]!='\0')
+c--;
+}
+if(var=='f' || var=='F')
+{
+for(int i=(blk-1);i>=0;i--)
+{
+if(B[blk-2]!='\0')
+c--;
+}
+return c;
+}
+else
+{
+for(int i=(blk-1);i>=0;i--)
+{
+if(C[blk-2]!='\0')
+c--;
+}
+return c;
+}
+}
+else if(B[blk-1]!='\0')
+{
+for(int i=(blk-1);i>=0;i--)
+{
+if(B[blk-2]!='\0')
+c--;
+}
+if(var=='f' || var=='F')
+{
+for(int i=(blk-1);i>=0;i--)
+{
+if(C[blk-2]!='\0')
+c--;
+}
+return c;
+}
+else
+{
+for(int i=(blk-1);i>=0;i--)
+{
+if(A[blk-2]!='\0')
+c--;
+}
+return c;
+}
+}
+else if(C[blk-1]!='\0')
+{
+for(int i=(blk-1);i>=0;i--)
+{
+if(C[blk-2]!='\0')
+c--;
+}
+if(var=='f' || var=='F')
+{
+for(int i=(blk-1);i>=0;i--)
+{
+if(A[blk-2]!='\0')
+c--;
+}
+return c;
+}
+else
+{
+for(int i=(blk-1);i>=0;i--)
+{
+if(B[blk-2]!='\0')
+c--;
+}
+return c;
+}
+}
+else
+{
+printf("game crashed,REPORT\n");
+return 0;
+}
+}
+void intro()
+{
+char ch;                                
+printf("\t \t \t \t \t \t \t WELCOME!!! \n\t \t \t \t \t \t    TO THE TOWER OF HANOI\n");
+fflush(stdout);
+sleep(5);
+system("clear");
+printf("Tower of hanoi ,is a puzzle,invented by french mathematician in 1883.\n It is also known as Brahma Tower\n");
+fflush(stdout);
+sleep(5);
+system("clear");
+printf("BASIC RULES:\n   you have to put every every numbers from one tower(column) to another using another tower(column).\n\n");
+printf("  *you can move smallest number from the tower(column)\n\n");
+printf("  *you can NOT place larger number over smaller.\n\n");
+printf("KEY STROKES:\nf :\tForward \t\tb :\tBackward\nr :\tRestart any time \tq :\tQuit\nh :\tSOLUTION(Help)\n\n");
+fflush(stdout);
+sleep(3);
+printf("Enter any character to start puzzle:  ");
+scanf("%s",&ch);
+printf("\n\nLOADING..........please wait.\n");
+fflush(stdout);
+sleep(5);
+}
